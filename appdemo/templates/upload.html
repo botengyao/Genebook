@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/fileinput/fileinput.min.css" rel="stylesheet" />
+
+    <title>Monkey测试结果检测</title>
+</head>
+<body>
+
+
+    <form method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1>Monkey 测试</h1><small>monkey_test</small><br>
+        请输入测试执行人：<input type="text" name="people"><br>
+        请输入测试 版本 &nbsp;：<input type="text" name="version"><br>
+        请上传monkey日志文件：<br>
+        <input type="file" name="myfile"><br>
+        <input type="submit" value="上传">
+        <input id="input-b2" name="input-b2" type="file" class="file" data-show-preview="false">
+        <input id="upload-file" type="file" class="file-loading" name="attachment" multiple />
+    </form>
+
+
+
+    <h1>分析结果：</h1><hr>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>测试执行人</td>
+                <td>测试执行版本</td>
+                <td>BUG数量统计</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{'people'}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+
+
+    <form>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">请选择Excel文件</h4>
+                    </div>
+                    <div class="modal-body">
+                        <a href="~/Data/ExcelTemplate/Order.xlsx" class="form-control" style="border:none;">下载导入模板</a>
+                        <input type="file" name="txt_file" id="txt_file" multiple class="file-loading" />
+                    </div></div>
+            </div>
+        </div>
+    </form>
+
+
+    <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/fileinput/fileinput.min.js"></script>
+    <script type="text/javascript" src="/static/js/fileinput/fileinput_locale_zh.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+
+</body>
+</html>

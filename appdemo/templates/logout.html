@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <title>Logout</title>
+</head>
+<body>
+<p>
+    Logout successfully!
+    <span id="totalSecond">2</span> seconds redirect to <a href="/"> tcm.tasly.com.</a>
+    <script language="javascript" type="text/javascript">
+    var second = totalSecond.innerText;
+    setInterval("redirect()", 1000);
+    function redirect(){
+    totalSecond.innerText=--second;
+    if(second<1) location.href='/';
+    }
+    </script>
+</p>
+
+</body>
+</html>
