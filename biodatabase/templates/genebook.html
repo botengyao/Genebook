@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <script type="application/shiny-singletons"></script>
+  <script type="application/html-dependencies">json2[2014.02.04];jquery[1.12.4];shiny[1.2.0];font-awesome[5.3.1];selectize[0.11.2];htmlwidgets[1.3];datatables-css[0.0.0];datatables-binding[0.4];crosstalk[1.0.0];bootstrap[3.3.7]</script>
+<script src="shared/json2-min.js"></script>
+<script src="shared/jquery.min.js"></script>
+<link href="shared/shiny.css" rel="stylesheet" />
+<script src="shared/shiny.min.js"></script>
+<link href="font-awesome-5.3.1/css/all.min.css" rel="stylesheet" />
+<link href="font-awesome-5.3.1/css/v4-shims.min.css" rel="stylesheet" />
+<link href="shared/selectize/css/selectize.bootstrap3.css" rel="stylesheet" />
+<!--[if lt IE 9]>
+<script src="shared/selectize/js/es5-shim.min.js"></script>
+<![endif]-->
+<script src="shared/selectize/js/selectize.min.js"></script>
+<script src="htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="datatables-binding-0.4/datatables.js"></script>
+<link href="crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="shared/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<script src="shared/bootstrap/js/bootstrap.min.js"></script>
+<script src="shared/bootstrap/shim/html5shiv.min.js"></script>
+<script src="shared/bootstrap/shim/respond.min.js"></script>  <link rel="stylesheet" type="text/css" href="shinythemes/css/cerulean.min.css"/>
+  <title>Tasly GeneNet Gene Book</title>
+  <title>Gene Book</title>
+
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8">
+        <h2>Tasly GeneNet Gene Book</h2>
+      </div>
+      <div class="col-sm-4">
+        <a href="http://tcm.tasly.com/" target="_blank">
+          <img src="logo.jpg" height="56" width="250" align="right"/>
+        </a>
+      </div>
+    </div>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <span class="navbar-brand">Gene Book</span>
+        </div>
+        <ul class="nav navbar-nav" data-tabsetid="5943">
+          <li class="active">
+            <a href="#tab-5943-1" data-toggle="tab" data-value="Gene ID Convert">
+              <i class=" fab fa-gofore fa-fw"></i>
+              Gene ID Convert
+            </a>
+          </li>
+          <li>
+            <a href="#tab-5943-2" data-toggle="tab" data-value="Multi-Genes Convert">
+              <i class=" fab fa-digital-ocean fa-fw"></i>
+              Multi-Genes Convert
+            </a>
+          </li>
+          <li>
+            <a href="#tab-5943-3" data-toggle="tab" data-value="Multi-Genes Description">
+              <i class=" fa fa-fingerprint fa-fw"></i>
+              Multi-Genes Description
+            </a>
+          </li>
+          <li>
+            <a href="#tab-5943-4" data-toggle="tab" data-value="Version History">
+              <i class=" fa fa-copyright fa-fw"></i>
+              Version History
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="tab-content" data-tabsetid="5943">
+        <div class="tab-pane active" data-value="Gene ID Convert" data-icon-class="fab fa-gofore" id="tab-5943-1">
+          <div class="row">
+            <div class="col-sm-3">
+              <form class="well">
+                <div id="reset">
+                  <div class="form-group shiny-input-container">
+                    <label class="control-label" for="input_type">Input Type</label>
+                    <div>
+                      <select id="input_type"><option value="hgnc_id">HGNC ID</option>
+<option value="ensembl_id">Ensembl ID</option>
+<option value="ncbi_id">NCBI ID</option>
+<option value="gene_name" selected>Gene Name</option></select>
+                      <script type="application/json" data-for="input_type" data-nonempty="">{}</script>
+                    </div>
+                  </div>
+                  <br/>
+                  <div class="form-group shiny-input-container">
+                    <label for="input_text">ID Convert</label>
+                    <input id="input_text" type="text" class="form-control" value="AD2"/>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-sm-9">
+              <h4>Gene ID Convert</h4>
+              <div id="id_convert" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+              <br/>
+              <h4>Gene Description</h4>
+              <div id="gene_description" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" data-value="Multi-Genes Convert" data-icon-class="fab fa-digital-ocean" id="tab-5943-2">
+          <div class="row">
+            <div class="col-sm-3">
+              <form class="well">
+                <div id="reset1">
+                  <div class="form-group shiny-input-container">
+                    <label>
+                      <h3>gene file (.txt)</h3>
+                    </label>
+                    <div class="input-group">
+                      <label class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                          Browse...
+                          <input id="gene_file_for_convert" name="gene_file_for_convert" type="file" style="display: none;" accept="text/plain"/>
+                        </span>
+                      </label>
+                      <input type="text" class="form-control" placeholder="No file selected" readonly="readonly"/>
+                    </div>
+                    <div id="gene_file_for_convert_progress" class="progress progress-striped active shiny-file-input-progress">
+                      <div class="progress-bar"></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h5>gene file (.txt) example:</h5>
+                </div>
+                <li>head ...   GENE</li>
+                <li>line 1 ...   ADAMTS7</li>
+                <li>line 2 ...   CDKN2BAS</li>
+                <li>line 3 ...   SH2B3</li>
+              </form>
+            </div>
+            <div class="col-sm-9">
+              <div id="multi_convert" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+              <a id="download_id_convert.csv" class="btn btn-default shiny-download-link " href="" target="_blank" download>
+                <i class="fa fa-download"></i>
+                Full Download
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" data-value="Multi-Genes Description" data-icon-class="fa fa-fingerprint" id="tab-5943-3">
+          <div class="row">
+            <h5>If it is less than two lines, only two lines are displayed.</h5>
+            <div id="multi_description" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
+            <br/>
+            <a id="download_gene_desc.csv" class="btn btn-default shiny-download-link " href="" target="_blank" download>
+              <i class="fa fa-download"></i>
+              Full Download
+            </a>
+          </div>
+        </div>
+        <div class="tab-pane" data-value="Version History" data-icon-class="fa fa-copyright" id="tab-5943-4">
+          <div class="row">
+            <h3>version 1.0.0</h3>
+            <h5>Initial release version.</h5>
+            <h3>version 1.0.1</h3>
+            <h5>Bug fix: error when rbind two objects which names are different.</h5>
+            <h5>Bug fix: export gene description which given by the converted gene name.</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -3,7 +3,7 @@ from django.contrib import admin
 from appdemo import views
 
 urlpatterns = [
-    #path('blog/',include('biodatabase.urls')),
+    url('genebook/', include('biodatabase.urls')),
     url(r'^$',views.index,name='index'),
 
     url(r'^register/$',views.register,name='register'),

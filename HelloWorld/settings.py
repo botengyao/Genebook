@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'appdemo.apps.AppdemoConfig',
+    'biodatabase.apps.BiodatabaseConfig',
 )
 
 MIDDLEWARE = (
@@ -58,7 +59,8 @@ ROOT_URLCONF = 'HelloWorld.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR+"/appdemo/templates",],
+        #'DIRS': [BASE_DIR+"/appdemo/templates",],
+        'DIRS': [BASE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
