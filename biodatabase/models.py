@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class GeneDbLink(models.Model):
-    name = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, null=True,unique=True)
     hgnc = models.CharField(db_column='HGNC', max_length=255, blank=True, null=True)  # Field name made lowercase.
     entrez_gene = models.CharField(db_column='Entrez_Gene', max_length=255, blank=True, null=True)  # Field name made lowercase.
     ensembl = models.CharField(db_column='Ensembl', max_length=255, blank=True, null=True)  # Field name made lowercase.
@@ -19,7 +19,7 @@ class GeneDbLink(models.Model):
         db_table = 'gene_db_link'
 
 class GenecardDescriptionSummary(models.Model):
-    gene = models.CharField(max_length=255, blank=True, null=True)
+    gene = models.ForeignKey(GeneDbLink, to_field='name', on_delete=models.DO_NOTHING, db_column='gene', blank=True, null=True)
     type = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     summary_entrez = models.CharField(max_length=255, blank=True, null=True)
@@ -31,6 +31,4 @@ class GenecardDescriptionSummary(models.Model):
     class Meta:
         managed = False
         db_table = 'genecard_description_summary'
-
-
 

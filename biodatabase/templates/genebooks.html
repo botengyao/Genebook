@@ -2,19 +2,16 @@
 <html lang="en">
   <head>
       {% load staticfiles %}
-      <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v3.8.5">
+    <meta name="author" content="">
+    <meta name="generator" content="">
     <title>Tasly GeneNet Gene Book</title>
-
-
     <!-- Bootstrap core CSS -->
-     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <!--<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>-->
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -30,9 +27,15 @@
           font-size: 3.5rem;
         }
       }
+      #information {
+    width:350px;
+    float:right;
+    padding:10px;
+}
     </style>
     <!-- Custom styles for this template -->
   </head>
+
   <body>
   <header>
    <div class="row">
@@ -61,7 +64,66 @@
   </header>
 
 <main role="main">
+    <br><br><br><br>
 
+<div class="area">
+
+
+    <form action ="{% url 'search' %}" method="get">
+
+        please select gene pool: <select name = "genepool" value = 'Gene Name'required>
+            <option value ="Gene Name">Gene Name</option>
+            <option value ="HGNC">HGNC</option>
+            <option value ="ENTREZ">ENTREZ</option>
+            <option value ="ENSEMBL">AENSEMBL</option>
+            <option value ="UNIPROTKB">UNIPROTKB</option>
+            <option value ="OMIM">OMIM</option>
+        </select>
+        <br>
+        <br>
+        input gene ID or Name: <input type="text" id="a" name="gene_id">
+        <br>
+        <br>
+        <!--<p>result: <span id='result'></span></p>-->
+        <button type="submit" id='sum'>Search</button>
+    </form>
+
+</div><!--area ed-->
+<div id ="information">
+    <table id="myGrid" class="table">
+
+        <tr>
+            <th>Gene Name</th>
+            <td id="name">{{info.name}}</td>
+        </tr>
+        <tr>
+
+            <th>HGNC ID</th>
+            <td id = 'hgnc'>{{info.hgnc}} </td>
+        </tr>
+        <tr>
+            <th>ENTREZ ID</th>
+            <td id = 'entrez'>{{info.entrez_gene}} </td>
+        </tr>
+        <tr>
+            <th>ENSEMBL ID</th>
+            <td id = 'ensembl'>{{info.ensembl}} </td>
+        </tr>
+        <tr>
+            <th>UNIPROTKB ID</th>
+            <td id = 'uniprotkb'>{{info.uniprotkb}} </td>
+        </tr>
+        <tr>
+            <th>OMIM ID</th>
+            <td id = 'omim'>{{info.omim}} </td>
+        </tr>
+
+</table>
+
+</div>
+<script src="/static/js/jquery-1.8.3.min.js"></script>
+
+<!--
 
   <section class="jumbotron text-center">
     <div class="container">
@@ -72,22 +134,12 @@
       </p>
         <img src="" height="300"/>
     </div>
-  </section>
+  </section> -->
 
-
-<p>请输入两个数字</p>
-    <p>{% url 'add' %}</p>
-<form action ="{% url 'add' %}" method="get">
-    a: <input type="text" id="a" name="a" value="1"> <br>
-    b: <input type="text" id="b" name="b" value="2"> <br>
-    <p>result: <span id='result'></span></p>
-    <button type="button" id='sum'>提交</button>
-</form>
 
 
   <div class="py-5 bg-light">
     <div class="container">
-
       <div class="row">
           {{info.name}}<br>
           {{info.hgnc}}<br>
@@ -99,7 +151,20 @@
           {{info.ensembl_link}}<br>
           {{info.uniprotkb_link}}<br>
           {{info.omim_link}}<br>
+      </div>
+    </div>
 
+      </div>
+    <div class="py-5 bg-light">
+    <div class="container">
+
+      <div class="row">
+              {{summary.type}}<br/>
+              {{summary.description}}<br/>
+              {{summary.summary_entrez}}<br/>
+              {{summary.summary_uniport}}<br/>
+              {{summary.summary_tocris}}<br/>
+              {{summary.summary_civic}}<br/>
       </div>
     </div>
   </div>
@@ -109,37 +174,8 @@
 
 <div id="list">Ajax 加载列表</div>
 <p id="list_result"></p>
-<script>
-    $(document).ready(function(){
-      $("#sum").click(function(){
-        var a = $("#a").val();
-        var b = $("#b").val();
-        $.get("{% url 'add' %}",{'a':a,'b':b}, function(ret){
-            $('#result').html(ret);
-        })
-      });
 
-      // 列表 list
-      $('#list').click(function(){
-          $.getJSON("{% url 'ajax-list' %}",function(ret){
-            //返回值 ret 在这里是一个列表
-            for (var i = ret.length - 1; i >= 0; i--) {
-              // 把 ret 的每一项显示在网页上
-              $('#list_result').append(' ' + ret[i])
-            };
-          })
-      })
 
-      // 字典 dict
-      $('#dict').click(function(){
-          $.getJSON("{% url 'ajax-dict' %}",function(ret){
-              //返回值 ret 在这里是一个字典
-              $('#dict_result').append(ret.twz + '<br>');
-              // 也可以用 ret['twz']
-          })
-      })
-    });
-</script>
 
 </main>
 

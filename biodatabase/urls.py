@@ -6,6 +6,6 @@ urlpatterns = [
     path('', views.genebook, name='genebook'),
     path('test/', views.ajax_dict, name='ajax-dict'),
     path('test2/', views.ajax_list, name='ajax-list'),
-    path('add/', views.add, name='add')
+    path('search/', views.search, name='search')
     #path('<int:blog_id>/', views.blogdetails, name='blogdetails' )
 ]
