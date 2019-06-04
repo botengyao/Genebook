@@ -12,6 +12,7 @@
     <!-- Bootstrap core CSS -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
       <!--<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>-->
+      <script src="/static/js/jquery-1.8.3.min.js"></script>
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -28,9 +29,16 @@
         }
       }
       #information {
-    width:350px;
-    float:right;
-    padding:10px;
+            width:1200px;
+            padding:10px;
+      }
+  .left{
+      position:relative;
+          left:20px;
+          width:30%
+      }
+
+
 }
     </style>
     <!-- Custom styles for this template -->
@@ -40,7 +48,7 @@
   <header>
    <div class="row">
       <div class="col-sm-8">
-        <h2>Tasly GeneNet Gene Book</h2>
+        <h2 class = "font-weight-bold" style = "color:#484848">Tasly GeneNet Gene Book</h2>
       </div>
       <div class="col-sm-4">
         <a href="http://tcm.tasly.com/" target="_blank">
@@ -48,80 +56,189 @@
         </a>
       </div>
     </div>
-      <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #1E90FF;">
-          <a class="navbar-brand" href="">Gene Book</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-              <div class="btn-group" role="group" aria-label="Basic example">
-                  <button type="button" class="btn btn-primary">Left</button>
-                  <button type="button" class="btn btn-primary">Middle</button>
-                  <button type="button" class="btn btn-primary">Right</button>
-              </div>
-          </div>
-      </nav>
+
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" style = "background:#0099FF">
+  <li class="nav-item">
+    <a class="nav-link active" id="pills--tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" style="color:	#FFFFFF">Gene ID Convert</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true" style="color:	#FFFFFF">Multi-Genes Convert</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="true" style="color:	#FFFFFF">Multi-Genes Description</a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"><div class="container-fluid">
+    <div class="row">
+        <div class = "left">
+            <div class="col-md-9">
+                <form action ="{% url 'search' %}" method="get">
+                    Please select gene pool: <select id = "select" class="form-control"  name = "genepool" value = 'Gene Name'required >
+                    <option value ="Gene Name">Gene Name</option>
+                    <option value ="HGNC">HGNC</option>
+                    <option value ="ENTREZ">ENTREZ</option>
+                    <option value ="ENSEMBL">AENSEMBL</option>
+                    <option value ="UNIPROTKB">UNIPROTKB</option>
+                    <option value ="OMIM">OMIM</option>
+                </select>
+                    <br>
+                    <input type="text" id="input" name="gene_id" class="form-control" placeholder="Please input gene ID or Name:">
+                    <br>
+                    <!--<p>result: <span id='result'></span></p>-->
+                    <button type="submit" id='sum' class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h4>Gene ID Convert</h4>
+            <table class="table table-striped table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Gene Name</th>
+                    <th scope="col">HGNC ID</th>
+                    <th scope="col">ENTREZ ID</th>
+                    <th scope="col">ENSEMBL ID</th>
+                    <th scope="col">UNIPROTKB ID</th>
+                    <th scope="col">OMIM ID</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr style = "height:55px">
+                    <th scope="row">{{info.name}}</th>
+                    <td>{{info.hgnc}}</td>
+                    <td>{{info.entrez_gene}}</td>
+                    <td>{{info.ensembl}}</td>
+                    <td>{{info.uniprotkb}}</td>
+                    <td>{{info.omim}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <h4>Gene Description</h4>
+            <table id="myGrid" class="table table-striped table-bordered">
+                <tr>
+                    <th>description</th>
+                    <td id = 'description'>{{info.description}} </td>
+                </tr>
+                <tr>
+                    <th>summary of ENTREZ</th>
+                    <td id = 'summary_entrez'>{{info.summary_entrez}} </td>
+                </tr>
+                <tr>
+                    <th>summary of GENECARD</th>
+                    <td id = 'summary_genecard'>{{info.summary_genecard}} </td>
+                </tr>
+                <tr>
+                    <th>summary of UNIPROT</th>
+                    <td id = 'summary_uniport'>{{info.summary_uniport}} </td>
+                </tr>
+                <tr>
+                    <th>summary of UNIPORT</th>
+                    <td id = 'summary_tocris'>{{info.summary_tocris}} </td>
+                </tr>
+                <tr>
+                    <th>summary of civic</th>
+                    <td id = 'summary_civic'>{{info.summary_civic}} </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    </div></div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <div class="container-fluid">
+    <div class="row">
+        <div class = "left">
+            <div class="col-md-9">
+                <form action ="{% url 'search' %}" method="get">
+                    Please select gene pool: <select id = "select" class="form-control"  name = "genepool" value = 'Gene Name'required >
+                    <option value ="Gene Name">Gene Name</option>
+                    <option value ="HGNC">HGNC</option>
+                    <option value ="ENTREZ">ENTREZ</option>
+                    <option value ="ENSEMBL">AENSEMBL</option>
+                    <option value ="UNIPROTKB">UNIPROTKB</option>
+                    <option value ="OMIM">OMIM</option>
+                </select>
+                    <br>
+                    <input type="text" id="input" name="gene_id" class="form-control" placeholder="Please input gene ID or Name:">
+                    <br>
+                    <!--<p>result: <span id='result'></span></p>-->
+                    <button type="submit" id='sum' class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h4>Gene ID Convert</h4>
+            <table class="table table-striped table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Gene Name</th>
+                    <th scope="col">HGNC ID</th>
+                    <th scope="col">ENTREZ ID</th>
+                    <th scope="col">ENSEMBL ID</th>
+                    <th scope="col">UNIPROTKB ID</th>
+                    <th scope="col">OMIM ID</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr style = "height:55px">
+                    <th scope="row">{{info.name}}</th>
+                    <td>{{info.hgnc}}</td>
+                    <td>{{info.entrez_gene}}</td>
+                    <td>{{info.ensembl}}</td>
+                    <td>{{info.uniprotkb}}</td>
+                    <td>{{info.omim}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <h4>Gene Description</h4>
+            <table id="myGrid" class="table table-striped table-bordered">
+                <tr>
+                    <th>description</th>
+                    <td id = 'description'>{{info.description}} </td>
+                </tr>
+                <tr>
+                    <th>summary of ENTREZ</th>
+                    <td id = 'summary_entrez'>{{info.summary_entrez}} </td>
+                </tr>
+                <tr>
+                    <th>summary of GENECARD</th>
+                    <td id = 'summary_genecard'>{{info.summary_genecard}} </td>
+                </tr>
+                <tr>
+                    <th>summary of UNIPROT</th>
+                    <td id = 'summary_uniport'>{{info.summary_uniport}} </td>
+                </tr>
+                <tr>
+                    <th>summary of UNIPORT</th>
+                    <td id = 'summary_tocris'>{{info.summary_tocris}} </td>
+                </tr>
+                <tr>
+                    <th>summary of civic</th>
+                    <td id = 'summary_civic'>{{info.summary_civic}} </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+
+        ssfs</div>
+  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+
+
+
+  </div>
   </header>
 
-<main role="main">
-    <br><br><br><br>
+    <br>
 
-<div class="area">
+    <br>
 
 
-    <form action ="{% url 'search' %}" method="get">
-
-        please select gene pool: <select name = "genepool" value = 'Gene Name'required>
-            <option value ="Gene Name">Gene Name</option>
-            <option value ="HGNC">HGNC</option>
-            <option value ="ENTREZ">ENTREZ</option>
-            <option value ="ENSEMBL">AENSEMBL</option>
-            <option value ="UNIPROTKB">UNIPROTKB</option>
-            <option value ="OMIM">OMIM</option>
-        </select>
-        <br>
-        <br>
-        input gene ID or Name: <input type="text" id="a" name="gene_id">
-        <br>
-        <br>
-        <!--<p>result: <span id='result'></span></p>-->
-        <button type="submit" id='sum'>Search</button>
-    </form>
-
-</div><!--area ed-->
-<div id ="information">
-    <table id="myGrid" class="table">
-
-        <tr>
-            <th>Gene Name</th>
-            <td id="name">{{info.name}}</td>
-        </tr>
-        <tr>
-
-            <th>HGNC ID</th>
-            <td id = 'hgnc'>{{info.hgnc}} </td>
-        </tr>
-        <tr>
-            <th>ENTREZ ID</th>
-            <td id = 'entrez'>{{info.entrez_gene}} </td>
-        </tr>
-        <tr>
-            <th>ENSEMBL ID</th>
-            <td id = 'ensembl'>{{info.ensembl}} </td>
-        </tr>
-        <tr>
-            <th>UNIPROTKB ID</th>
-            <td id = 'uniprotkb'>{{info.uniprotkb}} </td>
-        </tr>
-        <tr>
-            <th>OMIM ID</th>
-            <td id = 'omim'>{{info.omim}} </td>
-        </tr>
-
-</table>
-
-</div>
-<script src="/static/js/jquery-1.8.3.min.js"></script>
 
 <!--
 
@@ -137,7 +254,7 @@
   </section> -->
 
 
-
+<!--
   <div class="py-5 bg-light">
     <div class="container">
       <div class="row">
@@ -153,31 +270,9 @@
           {{info.omim_link}}<br>
       </div>
     </div>
-
-      </div>
-    <div class="py-5 bg-light">
-    <div class="container">
-
-      <div class="row">
-              {{summary.type}}<br/>
-              {{summary.description}}<br/>
-              {{summary.summary_entrez}}<br/>
-              {{summary.summary_uniport}}<br/>
-              {{summary.summary_tocris}}<br/>
-              {{summary.summary_civic}}<br/>
-      </div>
-    </div>
-  </div>
-
-<div id="dict">Ajax 加载字典</div>
-<p id="dict_result"></p>
-
-<div id="list">Ajax 加载列表</div>
-<p id="list_result"></p>
+-->
 
 
-
-</main>
 
 <footer class="text-muted">
   <div class="container">
@@ -188,6 +283,6 @@
 
   </div>
 </footer>
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
 </html>

@@ -1,22 +1,20 @@
 from django.shortcuts import render
 from .models import GeneDbLink
-from .models import GenecardDescriptionSummary
 from django.http import JsonResponse
 from django.http import HttpResponse
 import json
 # Create your views here.
 def genebook(request):
     gene_db = GeneDbLink.objects
-    info = GeneDbLink.objects.get(name='KLK13')
-
+    info = GeneDbLink.objects.get(omim='611000')
     #info2 = GenecardDescriptionSummary.objects.get(gene__name="KLK13")
-    summary = info.genecarddescriptionsummary_set.all().values('gene__name','type','description','summary_entrez','summary_genecard')
+    #summary = info.genecarddescriptionsummary_set.all().values('gene__name','type','description','summary_entrez','summary_genecard')
     # filter(子表外键字段__母表字段='过滤条件')
     #summary2 = GenecardDescriptionSummary.objects.filter(gene__name = 'KLK13').values('gene__name','type','description','summary_entrez','summary_genecard')
     #summary_info2 = list(summary2)
-    summary_info = list(summary)
+    #summary_info = list(info)
     return render(request, 'biodatabase/templates/genebooks.html',\
-                  {'gene_dbs':gene_db,'info':info,'summary':json.dumps(summary_info[0])})
+                  {'gene_dbs':gene_db,'info':info})
 def search(request):
     gene_db = GeneDbLink.objects
     try:
@@ -38,15 +36,12 @@ def search(request):
         return render(request, 'biodatabase/templates/genebooks.html')
 
     # info2 = GenecardDescriptionSummary.objects.get(gene__name="KLK13")
-    summary = info.genecarddescriptionsummary_set.all().values('gene__name', 'type', 'description', 'summary_entrez',
-                                                               'summary_genecard')
     # filter(子表外键字段__母表字段='过滤条件')
     # summary2 = GenecardDescriptionSummary.objects.filter(gene__name = 'KLK13').values('gene__name','type','description','summary_entrez','summary_genecard')
     # summary_info2 = list(summary2)
-    summary_info = list(summary)
-    return render(request, 'biodatabase/templates/genebooks.html', \
-                  {'gene_dbs': gene_db, 'info': info, 'summary': json.dumps(summary_info[0])})
-
+    #summary_info = list(summary)
+    return render(request, 'biodatabase/templates/genebooks.html',\
+                  {'gene_dbs':gene_db,'info':info})
 def ajax_list(request):
     a = [1,2,3,4,5,6,7,8,9,10]
     return JsonResponse(a, safe=False)
