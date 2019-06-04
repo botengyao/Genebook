@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      {% load staticfiles %}
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="generator" content="">
+    <title>Tasly GeneNet Gene Book</title>
+    <!-- Bootstrap core CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <!--<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>-->
+      <script src="/static/js/jquery-1.8.3.min.js"></script>
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      #information {
+            width:1200px;
+            padding:10px;
+      }
+  .left{
+      position:relative;
+          left:20px;
+          width:30%
+      }
+
+
+}
+    </style>
+    <!-- Custom styles for this template -->
+  </head>
+
+  <body>
+  <header>
+   <div class="row">
+      <div class="col-sm-8">
+        <h2 class = "font-weight-bold" style = "color:#484848">Tasly GeneNet Gene Book</h2>
+      </div>
+      <div class="col-sm-4">
+        <a href="http://tcm.tasly.com/" target="_blank">
+          <img src="/static/images/gene_net_logo.jpg" height="56" width="250" align="right"/>
+        </a>
+      </div>
+    </div>
+
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" style = "background:#0099FF">
+  <li class="nav-item">
+    <a class="nav-link " id="pills--tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" style="color:	#FFFFFF">Gene ID Convert</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="true" style="color:	#FFFFFF">Multi-Genes Convert</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="true" style="color:	#FFFFFF">Multi-Genes Description</a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade " id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+        <div class="row">
+            <div class = "left">
+                <div class="col-md-9">
+
+                    <form action ="{% url 'search' %}" method="get">
+                        {% csrf_token %}
+                        Please select gene pool: <select id = "select" class="form-control"  name = "genepool" value = 'Gene Name'required >
+                        <option value ="Gene Name">Gene Name</option>
+                        <option value ="HGNC">HGNC</option>
+                        <option value ="ENTREZ">ENTREZ</option>
+                        <option value ="ENSEMBL">AENSEMBL</option>
+                        <option value ="UNIPROTKB">UNIPROTKB</option>
+                        <option value ="OMIM">OMIM</option>
+                    </select>
+                        <br>
+                        <input type="text" id="input" name="gene_id" class="form-control" placeholder="Please input gene ID or Name:">
+                        <br>
+                        <!--<p>result: <span id='result'></span></p>-->
+                        <button type="submit" id='sum' class="btn btn-primary">Search</button>
+                    </form>
+                    <br>
+                    <br>
+                    <button type="submit" id='download' class="btn btn-secondary">Download ALL</button>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h4>Gene ID Convert</h4>
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Gene Name</th>
+                        <th scope="col">HGNC ID</th>
+                        <th scope="col">ENTREZ ID</th>
+                        <th scope="col">ENSEMBL ID</th>
+                        <th scope="col">UNIPROTKB ID</th>
+                        <th scope="col">OMIM ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr style = "height:55px">
+                        <th scope="row">KLK13</th>
+                        <td><a href = "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/6361">6361</a></td>
+                        <td><a href = "https://www.ncbi.nlm.nih.gov/gene?cmd=Retrieve&dopt=full_report&list_uids=26122">26085</a></td>
+                        <td><a href = "http://www.ensembl.org/Homo_sapiens/geneview?gene=ENSG00000167759">ENSG00000167759</a></td>
+                        <td><a href = "https://www.uniprot.org/uniprot/Q9UKR3">Q9UKR3</a></td>
+                        <td><a href = "https://omim.org/entry/605505">605505</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <h4>Gene Description</h4>
+                <table id="myGrid" class="table table-striped table-bordered">
+                    <tr>
+                        <th>description</th>
+                        <td id = 'description'>Kallikrein Related Peptidase 13 </td>
+                    </tr>
+                    <tr>
+                        <th>summary of ENTREZ</th>
+                        <td id = 'summary_entrez'>Entrez Gene Summary for KLK13 Gene Kallikreins are a subgroup of serine proteases having diverse physiological functions. Growing evidence suggests that many kallikreins are implicated in carcinogenesis and some have potential as novel cancer and other di </td>
+                    </tr>
+                    <tr>
+                        <th>summary of GENECARD</th>
+                        <td id = 'summary_genecard'>GeneCards Summary for KLK13 Gene KLK13 (Kallikrein Related Peptidase 13) is a Protein Coding gene.Among its related pathways are Keratinization and Metabolism of proteins.Gene Ontology (GO) annotations related to this gene include hydrolase activity and e </td>
+                    </tr>
+                    <tr>
+                        <th>summary of UNIPROT</th>
+                        <td id = 'summary_uniport'>Additional gene information for KLK13 Gene HGNC(6361)Entrez Gene(26085)Ensembl(ENSG00000167759)OMIM(605505)UniProtKB(Q9UKR3) Search for KLK13 at DataMedSearch for KLK13 at HumanCyc </td>
+                    </tr>
+                    <tr>
+                        <th>summary of UNIPORT</th>
+                        <td id = 'summary_tocris'>NA </td>
+                    </tr>
+                    <tr>
+                        <th>summary of civic</th>
+                        <td id = 'summary_civic'>NA </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade show active" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <div class ='container-fluid'>
+        <div class="row">
+            <div class = "left">
+                <div class="col-md-9">
+
+                    <form action ="{% url 'searchm' %}" method="get">
+                        {% csrf_token %}
+                        Please select gene pool: <select id = "select" class="form-control"  name = "genepool" value = 'Gene Name'required >
+                        <option value ="Gene Name">Gene Name</option>
+                        <option value ="HGNC">HGNC</option>
+                        <option value ="ENTREZ">ENTREZ</option>
+                        <option value ="ENSEMBL">AENSEMBL</option>
+                        <option value ="UNIPROTKB">UNIPROTKB</option>
+                        <option value ="OMIM">OMIM</option>
+                    </select>
+                        <br>
+                        <textarea  name="gene_id" class="form-control" style="height:300px" placeholder="You can input many gene IDs or Names separated by space or newline:"></textarea>
+                        <br>
+                        <!--<p>result: <span id='result'></span></p>-->
+                        <button type="submit"  class="btn btn-primary">Search</button>
+                    </form>
+                    <br>
+                    <br>
+                    <button type="submit" class="btn btn-secondary">Download ALL</button>
+                </div>
+
+            </div>
+            <div class="col-md-8">
+                <h4>Gene ID Convert</h4>
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Gene Name</th>
+                        <th scope="col">HGNC ID</th>
+                        <th scope="col">ENTREZ ID</th>
+                        <th scope="col">ENSEMBL ID</th>
+                        <th scope="col">UNIPROTKB ID</th>
+                        <th scope="col">OMIM ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for information in infor %}
+                    <tr style = "height:55px">
+                    <th scope="row">{{information.name}}</th>
+                    <td ><a href="{{information.hgnc_link}}">{{information.hgnc}}</a></td>
+                    <td ><a href="{{information.entrez_gene_link}}">{{information.entrez_gene}}</a></td>
+                    <td ><a href="{{information.ensembl_link}}">{{information.ensembl}}</a></td>
+                    <td ><a href="{{information.uniprotkb_link}}">{{information.uniprotkb}}</a></td>
+                    <td ><a href="{{information.omim_link}}">{{information.omim}}</a></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+        </div>
+        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+
+
+
+            <h4>Multi-Gene Description</h4>
+            <div class = "container-fluid">
+            <table style="table-layout:fixed"  class="table table-striped table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col" width="10%">Gene Name</th>
+                    <th scope="col" >description</th>
+                    <th scope="col" >summary of ENTREZ</th>
+                    <th scope="col" >summary of GENECARD</th>
+                    <th scope="col" >summary of UNIPROT</th>
+                    <th scope="col" width="6%">summary of tocris</th>
+                    <th scope="col" width="6%">summary of civic</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for information in infor %}
+                <tr style = "height:55px">
+                     <th scope="row">{{information.name}}</th>
+                    <td>{{information.description}}</td>
+                    <td style="word-break:break-all">{{information.summary_entrez}}</td>
+                    <td style="word-break:break-all">{{information.summary_genecard}}</td>
+                    <td style="word-break:break-all">{{information.summary_uniport}}</td>
+                    <td>{{information.summary_tocris}}</td>
+                    <td>{{information.summary_civic}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+ </div>
+    </div>
+  </header>
+
+    <br>
+
+    <br>
+
+
+
+<!--
+
+  <section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="jumbotron-heading">I'm Boteng</h1>
+      <p class="lead text-muted">Hey, this is Crazy Bert, I love Django websites</p>
+      <p>
+        <a href="mailto:botengyao@outlook.com" class="btn btn-primary my-2">Email me</a>
+      </p>
+        <img src="" height="300"/>
+    </div>
+  </section> -->
+
+
+<!--
+  <div class="py-5 bg-light">
+    <div class="container">
+      <div class="row">
+          {{info.name}}<br>
+          {{info.hgnc}}<br>
+          {{info.entrez_gene}}<br>
+          {{info.ensembl}}<br>
+          {{info.uniprotkb}}<br>
+          {{info.hgnc_link}}<br>
+          {{info.entrez_gene_li}}<br>
+          {{info.ensembl_link}}<br>
+          {{info.uniprotkb_link}}<br>
+          {{info.omim_link}}<br>
+      </div>
+    </div>
+-->
+
+
+
+<footer class="text-muted">
+  <div class="container">
+    <p class="float-right">
+      <a href="#">Back to top</a>
+    </p>
+    <p class = "text-center">&copy; Tasly GeneNET 2019</p>
+
+  </div>
+</footer>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
