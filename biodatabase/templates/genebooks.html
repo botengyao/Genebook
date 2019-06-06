@@ -90,9 +90,13 @@
                     <!--<p>result: <span id='result'></span></p>-->
                     <button type="submit" class="btn btn-primary">Search</button>
                 </form>
+                <iframe name="postTo" style="display:none"></iframe>
                 <br>
                     <br>
-                    <button type="submit" id='download' class="btn btn-secondary">Download ALL</button>
+                    <form action ="{% url 'download' %}" method="get">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary">Download ALL</button>
+                     </form>
             </div>
         </div>
         <div class="col-md-8">
@@ -166,7 +170,7 @@
                         <option value ="OMIM">OMIM</option>
                     </select>
                         <br>
-                        <textarea  name="gene_id" class="form-control" style="height:200px" placeholder="You can input many gene IDs or Names:"></textarea>
+                        <textarea  name="gene_id" class="form-control" style="height:300px" placeholder="You can input many gene IDs or Names:"></textarea>
                         <br>
                         <!--<p>result: <span id='result'></span></p>-->
                         <button type="submit" id='sum' class="btn btn-primary">Search</button>
