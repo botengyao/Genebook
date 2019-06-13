@@ -35,7 +35,7 @@
   .left{
       position:relative;
           left:20px;
-          width:30%
+          width:25%
       }
 
 
@@ -75,21 +75,23 @@
                 <div class="col-md-9">
 
                     <form action ="{% url 'search' %}" method="get">
-                        {% csrf_token %}
-                        Please select gene pool: <select id = "select" class="form-control"  name = "genepool" value = 'Gene Name'required >
-                        <option value ="Gene Name">Gene Name</option>
-                        <option value ="HGNC">HGNC</option>
-                        <option value ="ENTREZ">ENTREZ</option>
-                        <option value ="ENSEMBL">AENSEMBL</option>
-                        <option value ="UNIPROTKB">UNIPROTKB</option>
-                        <option value ="OMIM">OMIM</option>
-                    </select>
-                        <br>
-                        <input type="text" id="input" name="gene_id" class="form-control" placeholder="Please input gene ID or Name:">
-                        <br>
-                        <!--<p>result: <span id='result'></span></p>-->
-                        <button type="submit" id='sum' class="btn btn-primary">Search</button>
-                    </form>
+                    {% csrf_token %}
+                    Please select gene pool: <select name = "genepool" class="form-control"  value = 'Fuzzy Search'required >
+                    <option value ="Fuzzy Search">Fuzzy Search</option>
+                    <option value ="Gene Name">Gene Name</option>
+                    <option value ="HGNC">HGNC</option>
+                    <option value ="ENTREZ">ENTREZ</option>
+                    <option value ="ENSEMBL">ENSEMBL</option>
+                    <option value ="UNIPROTKB">UNIPROTKB</option>
+                    <option value ="OMIM">OMIM</option>
+                </select>
+                    <br>
+                    <input type="text" id="input" name="gene_id" class="form-control" placeholder="Please input gene ID or Name:" value={%if search_id %} {{search_id}}{% endif %} >
+                    <br>
+                    <!--<p>result: <span id='result'></span></p>-->
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <iframe name="postTo" style="display:none"></iframe>
                     <br>
                     <br>
                     <button type="submit" id='btn_export' class="btn btn-secondary">Download ALL</button>
@@ -149,26 +151,27 @@
             </div>
         </div>
     </div>
-
-
     <div class="tab-pane fade show active" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
         <div class ='container-fluid'>
         <div class="row">
             <div class = "left">
                 <div class="col-md-9">
 
-                    <form action ="{% url 'searchm' %}" method="get">
+                    <form action ="{% url 'searchmulti' %}" method="get">
                         {% csrf_token %}
-                        Please select gene pool: <select id = "select" class="form-control"  name = "genepool" value = 'Gene Name'required >
-                        <option value ="Gene Name">Gene Name</option>
-                        <option value ="HGNC">HGNC</option>
-                        <option value ="ENTREZ">ENTREZ</option>
-                        <option value ="ENSEMBL">AENSEMBL</option>
-                        <option value ="UNIPROTKB">UNIPROTKB</option>
-                        <option value ="OMIM">OMIM</option>
-                    </select>
+                        Please input something:
                         <br>
-                        <textarea  name="gene_id" class="form-control" style="height:300px" placeholder="You can input many gene IDs or Names separated by space or newline:"></textarea>
+                        <textarea  name="gene_id" class="form-control" style="height:300px;width:330px" placeholder="You can input anything separated by space or newline:" >{%if search_input %}{{search_input}}{% endif %}</textarea>
+                        <br>
+                        Please select the output that you want:
+                        <select  name= "geneoutput" id = "select" class="form-control" value = 'All' required >
+                            <option value ="All">All</option>
+                            <option value ="HGNC">HGNC</option>
+                            <option value ="ENTREZ">ENTREZ</option>
+                            <option value ="ENSEMBL">ENSEMBL</option>
+                            <option value ="UNIPROTKB">UNIPROTKB</option>
+                            <option value ="OMIM">OMIM</option>
+                        </select>
                         <br>
                         <!--<p>result: <span id='result'></span></p>-->
                         <button type="submit"  class="btn btn-primary">Search</button>
@@ -183,87 +186,168 @@
 
             </div>
             <div class="col-md-8">
+
                 <h4>Gene ID Convert</h4>
-                <table class="table table-striped table-bordered">
-                    <thead class="thead-light">
-                    <tr>
-                        <th scope="col">Gene Name</th>
-                        <th scope="col">HGNC ID</th>
-                        <th scope="col">ENTREZ ID</th>
-                        <th scope="col">ENSEMBL ID</th>
-                        <th scope="col">UNIPROTKB ID</th>
-                        <th scope="col">OMIM ID</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for information in infor %}
-                    <tr style = "height:55px">
-                    <th scope="row">{{information.name}}</th>
-                    <td ><a href="{{information.hgnc_link}}">{{information.hgnc}}</a></td>
-                    <td ><a href="{{information.entrez_gene_link}}">{{information.entrez_gene}}</a></td>
-                    <td ><a href="{{information.ensembl_link}}">{{information.ensembl}}</a></td>
-                    <td ><a href="{{information.uniprotkb_link}}">{{information.uniprotkb}}</a></td>
-                    <td ><a href="{{information.omim_link}}">{{information.omim}}</a></td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                {% if gene_out == "All" %}
+                    <table class="table table-hover table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Your Input</th>
+                            <th scope="col">Gene Name</th>
+                            <th scope="col">HGNC ID</th>
+                            <th scope="col">ENTREZ ID</th>
+                            <th scope="col">ENSEMBL ID</th>
+                            <th scope="col">UNIPROTKB ID</th>
+                            <th scope="col">OMIM ID</th>
+                            <th scope="col">Credibility</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for information in infor %}
+                         {% if information.info %}
+                        <tr style = "height:55px">
+                            <th scope="row">{{information.id}}</th>
+                            <th scope="row">{{information.info.name}}</th>
+                            <td ><a href="{{information.info.hgnc_link}}">{{information.info.hgnc}}</a></td>
+                            <td ><a href="{{information.info.entrez_gene_link}}">{{information.info.entrez_gene}}</a></td>
+                            <td ><a href="{{information.info.ensembl_link}}">{{information.info.ensembl}}</a></td>
+                            <td ><a href="{{information.info.uniprotkb_link}}">{{information.info.uniprotkb}}</a></td>
+                            <td ><a href="{{information.info.omim_link}}">{{information.info.omim}}</a></td>
+                            <td >{{information.cre}}</td>
+                        </tr>
+                        {% else %}
+                        <tr style = "height:55px">
+                            <th scope="row">{{information.id}}</th>
+                            <th scope="row">None</th>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >{{information.cre}}</td>
+                        </tr>
+                        {% endif %}
+
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                {% else %}
+                <table class="table table-hover table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Your Input</th>
+                            <th scope="col">Gene Name</th>
+                            <th scope="col">{{gene_out}} ID</th>
+                            <th scope="col" width="35%">description</th>
+                            <th scope="col">Credibility</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for information in infor %}
+                         {% if information.info %}
+                        <tr style = "height:55px">
+                            <th scope="row">{{information.id}}</th>
+                            <th scope="row">{{information.info.name}}</th>
+                            {% if gene_out == "HGNC" %}
+                            <td ><a href="{{information.info.hgnc_link}}">{{information.info.hgnc}}</a></td>
+                            {% elif gene_out == "ENTREZ" %}
+                            <td ><a href="{{information.info.entrez_gene_link}}">{{information.info.entrez_gene}}</a></td>
+                            {% elif gene_out == "ENSEMBL" %}
+                            <td ><a href="{{information.info.ensembl_link}}">{{information.info.ensembl}}</a></td>
+                            {% elif gene_out == "UNIPROTKB" %}
+                            <td ><a href="{{information.info.uniprotkb_link}}">{{information.info.uniprotkb}}</a></td>
+                            {% elif gene_out == "OMIM" %}
+                            <td ><a href="{{information.info.omim_link}}">{{information.info.omim}}</a></td>
+                            {% endif %}
+                            <td >{{information.info.description}}</td>
+                            <td >{{information.cre}}</td>
+                        </tr>
+                        {% else %}
+                        <tr style = "height:55px">
+                            <th scope="row">{{information.id}}</th>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >{{information.cre}}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
             </div>
         </div>
         </div>
         </div>
-        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-
-
-
+    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
             <h4>Multi-Gene Description</h4>
             <div class = "container-fluid">
-            <table id= 'test'style="table-layout:fixed"  class="table table-striped table-bordered">
-                <thead class="thead-light">
-                <tr>
-                    <th scope="col" width="10%">Gene Name</th>
-                    <th scope="col" >description</th>
-                    <th scope="col" >summary of ENTREZ</th>
-                    <th scope="col" >summary of GENECARD</th>
-                    <th scope="col" >summary of UNIPROT</th>
-                    <th scope="col" width="6%">summary of tocris</th>
-                    <th scope="col" width="6%">summary of civic</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for information in infor %}
-                <tr style = "height:55px">
-                     <th scope="row">{{information.name}}</th>
-                    <td>{{information.description}}</td>
-                    <td style="word-break:break-all">{{information.summary_entrez}}</td>
-                    <td style="word-break:break-all">{{information.summary_genecard}}</td>
-                    <td style="word-break:break-all">{{information.summary_uniport}}</td>
-                    <td>{{information.summary_tocris}}</td>
-                    <td>{{information.summary_civic}}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                <table class="table table-striped table-bordered">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Your Input</th>
+                            <th scope="col">Gene Name</th>
+                            <th scope="col">Credibility</th>
+                            <th scope="col" >description</th>
+                            <th scope="col" >summary of ENTREZ</th>
+                            <th scope="col" >summary of GENECARD</th>
+                            <th scope="col" >summary of UNIPROT</th>
+                            <th scope="col" width="6%">summary of tocris</th>
+                            <th scope="col" width="6%">summary of civic</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for information in infor %}
+                         {% if information.info %}
+                        <tr style = "height:55px">
+                            <th scope="row">{{information.id}}</th>
+                            <td scope="row">{{information.info.name}}</td>
+                            <td >{{information.cre}}</td>
+                            <td>{{information.info.description}}</td>
+                            <td style="word-break:break-all">{{information.info.summary_entrez}}</td>
+                            <td style="word-break:break-all">{{information.info.summary_genecard}}</td>
+                            <td style="word-break:break-all">{{information.info.summary_uniport}}</td>
+                            <td>{{information.info.summary_tocris}}</td>
+                            <td>{{information.info.summary_civic}}</td>
+
+                        </tr>
+                        {% else %}
+                        <tr style = "height:55px">
+                            <th scope="row">{{information.id}}</th>
+                            <th scope="row">None</th>
+                            <td >{{information.cre}}</td>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >None</td>
+                            <td >None</td>
+
+                        </tr>
+                        {% endif %}
+
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
             </div>
  </div>
     </div>
   </header>
-
     <br>
-
     <br>
-
-
+    <script>
+     var choose = {{gene_output|safe}}
+     document.getElementById("select").value = choose
+    </script>
 <script src="/static/js/FileSaver.js"></script>
 <script src="/static/js/tableexport.js"></script>
 
 
-<script>
-	 //导出
-    $("#btn_export").click(function () {
-        $('#test').tableExport({ type: 'csv', escape: 'false', fileName: 'asasd' })
-    })
-</script>
 
 <footer class="text-muted">
   <div class="container">

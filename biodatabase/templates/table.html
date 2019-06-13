@@ -52,3 +52,34 @@
 
 </body>
 </html>
+
+               <table  class="table table-striped table-bordered">
+                <thead class="thead-light" >
+                <tr>
+                    <th scope="col">Gene Name</th>
+                    <th scope="col">HGNC</th>
+                    <th scope="col">ENTREZ</th>
+                    <th scope="col">ENSEMBL</th>
+                    <th scope="col">UNIPROTKB</th>
+                    <th scope="col">OMIM</th>
+                    <th scope="col">type</th>
+                    <th scope="col">description</th>
+                    <th scope="col">summary</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for information in info_filter %}
+                <tr style = "height:55px">
+                    <th scope="row"><a href = "">{{information.name}}</a></th>
+                        <td ><a href="{{information.hgnc_link}}">{{information.hgnc}}</a></td>
+                        <td ><a href="{{information.entrez_gene_link}}">{{information.entrez_gene}}</a></td>
+                        <td ><a href="{{information.ensembl_link}}">{{information.ensembl}}</a></td>
+                        <td ><a href="{{information.uniprotkb_link}}">{{information.uniprotkb}}</a></td>
+                        <td ><a href="{{information.omim_link}}">{{information.omim}}</a></td>
+                        <td >{{information.type}}</td>
+                        <td >{{information.description}}</td>
+                        <td >{{information.summary_genecard}}</td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+            </table>
