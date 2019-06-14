@@ -1,2 +1,2 @@
-# Genesearch_websides
+# Genebook_websides
 Genebook search system based on Django 2.2 
