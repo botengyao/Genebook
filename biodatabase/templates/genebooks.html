@@ -86,7 +86,7 @@
                     <option value ="OMIM">OMIM</option>
                 </select>
                     <br>
-                    <input type="text" id="input" name="gene_id" class="form-control" placeholder="Please input gene ID or Name:" value={%if search_id %} {{search_id}}{% endif %} >
+                    <input type="text" id="input" name="gene_id" class="form-control" placeholder="Please input gene ID or Name:">
                     <br>
                     <!--<p>result: <span id='result'></span></p>-->
                     <button type="submit" class="btn btn-primary">Search</button>
@@ -234,46 +234,13 @@
 
     <script>
 
-     var pool = {{pool|safe}}
+     var pool = {{pool|safe}};
+     var id = {{search_id|safe}};
 
-     document.getElementById("select").value=pool
+     document.getElementById("select").value=pool;
+     document.getElementById("input").value=id;
 
     </script>
-
-
-<!--
-
-  <section class="jumbotron text-center">
-    <div class="container">
-      <h1 class="jumbotron-heading">I'm Boteng</h1>
-      <p class="lead text-muted">Hey, this is Crazy Bert, I love Django websites</p>
-      <p>
-        <a href="mailto:botengyao@outlook.com" class="btn btn-primary my-2">Email me</a>
-      </p>
-        <img src="" height="300"/>
-    </div>
-  </section> -->
-
-
-<!--
-  <div class="py-5 bg-light">
-    <div class="container">
-      <div class="row">
-          {{info.name}}<br>
-          {{info.hgnc}}<br>
-          {{info.entrez_gene}}<br>
-          {{info.ensembl}}<br>
-          {{info.uniprotkb}}<br>
-          {{info.hgnc_link}}<br>
-          {{info.entrez_gene_li}}<br>
-          {{info.ensembl_link}}<br>
-          {{info.uniprotkb_link}}<br>
-          {{info.omim_link}}<br>
-      </div>
-    </div>
--->
-
-
 
 <footer class="text-muted">
   <div class="container">

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import GeneDbLink
+from .models import GenecardId
 from django.http import JsonResponse
 from django.http import HttpResponse
 #from django.views import View
@@ -25,11 +26,11 @@ def search(request):
     try:
         gene_pool = request.GET['genepool']
         search_id = request.GET['gene_id']
-
+        print(search_id)
         if search_id:
             if gene_pool == "Fuzzy Search":
-                info_filter = GeneDbLink.objects.filter(Q(name=search_id)|Q(hgnc=search_id)|Q(entrez_gene=search_id)|Q(ensembl=search_id)\
-                                                        |Q(uniprotkb=search_id)|Q(omim=search_id))
+                info_filter = GeneDbLink.objects.filter(Q(name__iexact=search_id)|Q(hgnc__iexact=search_id)|Q(entrez_gene__iexact=search_id)|Q(ensembl__iexact=search_id)\
+                                                        |Q(uniprotkb__iexact=search_id)|Q(omim__iexact=search_id))
                 if not info_filter:
                     regex = '(?i)'+'^'+ search_id + '\d'
                     info_filter = GeneDbLink.objects.filter(name__regex = regex)
@@ -37,23 +38,34 @@ def search(request):
                         info_filter = info_filter[:51]
 
                     if not info_filter:
-                        info_filter = GeneDbLink.objects.filter(description__regex = search_id)
+                        info_filter = GeneDbLink.objects.filter(subname__icontains = search_id)
                         if len(info_filter) >= 50:
                             info_filter = info_filter[:51]
 
+                    """
+                    if not info_filter:
+                        gene_name = GenecardId.objects.filter(subname__icontains = search_id).distinct()
+                        for name in gene_name:
+                            filter = GeneDbLink.objects.filter(name = name.gene)
+                            if GeneDbLink.objects.filter(
+                            info_filter.append(GeneDbLink.objects.filter(name = name.gene))
+                        if len(info_filter) >= 50:
+                            info_filter = info_filter[:51]
+                    """
+
             elif gene_pool == "Gene Name":
                 #info = GeneDbLink.objects.get(name = search_id)
-                info_filter = GeneDbLink.objects.filter(name__regex='^'+ search_id)
+                info_filter = GeneDbLink.objects.filter(name__regex='(?i)'+'^'+ search_id)
             elif gene_pool == "HGNC":
-                info_filter = GeneDbLink.objects.filter(hgnc=search_id)
+                info_filter = GeneDbLink.objects.filter(hgnc__iexact=search_id)
             elif gene_pool == "ENTREZ":
-                info_filter = GeneDbLink.objects.filter(entrez_gene=search_id)
+                info_filter = GeneDbLink.objects.filter(entrez_gene__iexact=search_id)
             elif gene_pool == "ENSEMBL":
-                info_filter = GeneDbLink.objects.filter(ensembl=search_id)
+                info_filter = GeneDbLink.objects.filter(ensembl__iexact=search_id)
             elif gene_pool == "UNIPROTKB":
-                info_filter = GeneDbLink.objects.filter(uniprotkb=search_id)
+                info_filter = GeneDbLink.objects.filter(uniprotkb__iexact=search_id)
             elif gene_pool == "OMIM":
-                info_filter = GeneDbLink.objects.filter(omim=search_id)
+                info_filter = GeneDbLink.objects.filter(omim__iexact=search_id)
         else:
             info_filter = GeneDbLink.objects.filter(name="")
 
@@ -66,7 +78,8 @@ def search(request):
     # summary_info2 = list(summary2)
     #summary_info = list(summary)
     return render(request, 'biodatabase/templates/genebooks.html',\
-                  {'info_filter':info_filter, "search_id":search_id,"pool":json.dumps(gene_pool)})
+                  {'info_filter':info_filter, "search_id":json.dumps(search_id),"pool":json.dumps(gene_pool)})
+                 # {'info_filter':info_filter, "search_id":json.dumps(search_id),"pool":json.dumps(gene_pool),"gene_name":gene_name})
 class searchID:
     def __init__(self, id, cre, info):
         self.id = id
@@ -85,16 +98,13 @@ def search_multi(request):
     try:
         search_input = request.GET['gene_id']
         gene_output = request.GET['geneoutput']
-        search_id = search_input.split()
-        print(search_id)
+        search_id = search_input.split("\r\n")
     except:
         render(request, 'biodatabase/templates/genebooksmulti.html', \
                {'gene_dbs': gene_db, 'infor': results, "search_input":search_input, 'gene_output':json.dumps(gene_output),'gene_out':gene_output})
 
     for id in search_id:
-        infor = GeneDbLink.objects.filter(
-            Q(name=id) | Q(hgnc=id) | Q(entrez_gene=id) | Q(ensembl=id) \
-            | Q(uniprotkb=id) | Q(omim=id))
+        infor = GeneDbLink.objects.filter(name__iexact=id)
         if infor:
             inputID = searchID(id, "Trust", infor[0])
         else:
@@ -103,18 +113,21 @@ def search_multi(request):
             if infor:
                 inputID = searchID(id, "Trust (Group)", infor[0])
             else:
-                infor = GeneDbLink.objects.filter(Q(hgnc__icontains=id) | Q(entrez_gene__icontains=id) \
-                  | Q(ensembl__icontains=id) | Q(uniprotkb__icontains=id) | Q(omim__icontains=id))
-                if infor:
+                infor = GeneDbLink.objects.filter(subname__icontains = id)
+                print(len(infor))
+                if 1 < len(infor) < 30:
+                    #infor = GeneDbLink.objects.filter(
+                    #    Q(name__iexact=id) | Q(hgnc__iexact=id) | Q(entrez_gene__iexact=id) | Q(ensembl__iexact=id) \
+                      #  | Q(uniprotkb__iexact=id) | Q(omim__iexact=id))
                     inputID = searchID(id, "Probably", infor[0])
+                elif len(infor) == 1:
+                    inputID = searchID(id, "Trust", infor[0])
                 else:
-                    infor = GeneDbLink.objects.filter(description__regex = id)
-                    if 1 <= len(infor) <= 30:
-                        inputID = searchID(id, "Possibly", infor[0])
-                    else:
-                        infor = None
-                        inputID = searchID(id, "Missing", infor)
+                    infor = None
+                    inputID = searchID(id, "Try to be sepcific", infor)
+
         results.append(inputID)
+        #print(results[0].id,results[0].cre,results[0].info)
     '''
     if gene_pool == "Gene Name":    pass
     elif gene_pool == "HGNC":pass

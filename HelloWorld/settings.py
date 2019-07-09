@@ -90,7 +90,18 @@ DATABASES = {
         'PORT':'3306',
     }
 }
-
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'appdemo',
+        'USER':'ionadmin',
+        'PASSWORD':'ionadmin',
+        'HOST':'10.9.17.6',
+        'PORT':'3306',
+    }
+}
+'''
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
