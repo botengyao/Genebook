@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(blank=True, max_length=255, null=True)),
-                ('subname', models.CharField(blank=True, max_length=768, null=True)),
+                ('subname', models.CharField(blank=True, max_length=511, null=True)),
                 ('hgnc', models.CharField(blank=True, db_column='HGNC', max_length=255, null=True)),
                 ('entrez_gene', models.CharField(blank=True, db_column='Entrez_Gene', max_length=255, null=True)),
                 ('ensembl', models.CharField(blank=True, db_column='Ensembl', max_length=255, null=True)),

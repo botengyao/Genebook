@@ -5,9 +5,15 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 #from django.views import View
 from django.db.models import Q
+from django.db.models.expressions import RawSQL
 import json
 import csv
 # Create your views here.
+class searchID:
+    def __init__(self, id, cre, info):
+        self.id = id
+        self.cre = cre
+        self.info = info
 
 def genebook(request):
     infor = GeneDbLink.objects.filter(omim='611000')
@@ -22,25 +28,50 @@ def genebook(request):
 def search(request):
     infor =[]
     global info_filter
-    info_filter = GeneDbLink.objects.filter(name="")
+    info_filter = GeneDbLink.objects.filter(name="KLK13")
     try:
         gene_pool = request.GET['genepool']
         search_id = request.GET['gene_id']
         print(search_id)
+        cred = 'No results'
         if search_id:
             if gene_pool == "Fuzzy Search":
                 info_filter = GeneDbLink.objects.filter(Q(name__iexact=search_id)|Q(hgnc__iexact=search_id)|Q(entrez_gene__iexact=search_id)|Q(ensembl__iexact=search_id)\
                                                         |Q(uniprotkb__iexact=search_id)|Q(omim__iexact=search_id))
-                if not info_filter:
-                    regex = '(?i)'+'^'+ search_id + '\d'
-                    info_filter = GeneDbLink.objects.filter(name__regex = regex)
-                    if len(info_filter) >= 50:
-                        info_filter = info_filter[:51]
+                if info_filter:
+                    cred = "Trust, find exact name or id"
+                #print(len(info_filter))
+                else:
+                    #print(0)
+                    #regex = '(?i)'+'^'+ search_id + '\d'
+                    #regex = '^'+ search_id + '\d'
+                    #regex = search_id
+                    #info_filter = GeneDbLink.objects.filter(name__iregex = regex)
+                    info_filter = GeneDbLink.objects.raw('SELECT id FROM gene_db_link_3 WHERE name REGEXP ' +'"' + '^'+ search_id + '[0-9]' + '"'  + ';')
+                    #info_filter = GeneDbLink.objects.extra(where=['name= %s'],
+                                                        #    params = ['REGEXP ' + '^' + search_id + '[0-9]'],)
 
-                    if not info_filter:
-                        info_filter = GeneDbLink.objects.filter(subname__icontains = search_id)
-                        if len(info_filter) >= 50:
-                            info_filter = info_filter[:51]
+                        #select = 'SELECT id FROM gene_db_link_3 WHERE name = %s', ('REGEXP' + '^' + search_id + '[0-9]',)))
+                    count = 0
+                    for ele in info_filter:
+                        count += 1
+                        if count >= 2:
+                            break
+
+                    #print(info_filter)
+                    if count >= 1:
+                        cred = "Trust (group)"
+                    elif not count:
+                        info_filter = GeneDbLink.objects.filter(Q(subname__icontains = "," + search_id + ",")|Q(subname__iregex = '^' + search_id + ","))
+                        #print(info_filter)
+                        if info_filter:
+                            cred = "Trust, find exact alias"
+                        else:
+                            info_filter = GeneDbLink.objects.filter(subname__icontains = search_id)
+                            cred = "Possible, don't find exact alias"
+                            if len(info_sfilter) >= 30:
+                                info_filter = info_filter[:31]
+                                cred = "Possible, don't find exact alias"
 
                     """
                     if not info_filter:
@@ -52,20 +83,27 @@ def search(request):
                         if len(info_filter) >= 50:
                             info_filter = info_filter[:51]
                     """
-
-            elif gene_pool == "Gene Name":
-                #info = GeneDbLink.objects.get(name = search_id)
-                info_filter = GeneDbLink.objects.filter(name__regex='(?i)'+'^'+ search_id)
             elif gene_pool == "HGNC":
                 info_filter = GeneDbLink.objects.filter(hgnc__iexact=search_id)
+                if info_filter:
+                    cred = "Trust, find exact name or id"
+
             elif gene_pool == "ENTREZ":
                 info_filter = GeneDbLink.objects.filter(entrez_gene__iexact=search_id)
+                if info_filter:
+                    cred = "Trust, find exact name or id"
             elif gene_pool == "ENSEMBL":
                 info_filter = GeneDbLink.objects.filter(ensembl__iexact=search_id)
+                if info_filter:
+                    cred = "Trust, find exact name or id"
             elif gene_pool == "UNIPROTKB":
                 info_filter = GeneDbLink.objects.filter(uniprotkb__iexact=search_id)
+                if info_filter:
+                    cred = "Trust, find exact name or id"
             elif gene_pool == "OMIM":
                 info_filter = GeneDbLink.objects.filter(omim__iexact=search_id)
+                if info_filter:
+                    cred = "Trust, find exact name or id"
         else:
             info_filter = GeneDbLink.objects.filter(name="")
 
@@ -78,13 +116,9 @@ def search(request):
     # summary_info2 = list(summary2)
     #summary_info = list(summary)
     return render(request, 'biodatabase/templates/genebooks.html',\
-                  {'info_filter':info_filter, "search_id":json.dumps(search_id),"pool":json.dumps(gene_pool)})
+                  {'trust':cred,'info_filter':info_filter, "search_id":json.dumps(search_id),"pool":json.dumps(gene_pool)})
                  # {'info_filter':info_filter, "search_id":json.dumps(search_id),"pool":json.dumps(gene_pool),"gene_name":gene_name})
-class searchID:
-    def __init__(self, id, cre, info):
-        self.id = id
-        self.cre = cre
-        self.info = info
+
 
 def search_multi(request):
     gene_db = GeneDbLink.objects
@@ -106,25 +140,43 @@ def search_multi(request):
     for id in search_id:
         infor = GeneDbLink.objects.filter(name__iexact=id)
         if infor:
-            inputID = searchID(id, "Trust", infor[0])
+            inputID = searchID(id, "Trust, find exact name or id", infor[0])
         else:
-            regex = '(?i)' + '^' + id + '\d'
-            infor = GeneDbLink.objects.filter(name__regex=regex)
-            if infor:
-                inputID = searchID(id, "Trust (Group)", infor[0])
+            #regex =  '^' + id + '\d'
+            #regex = '(?i)' + '^' + id + '\d'
+            #infor = GeneDbLink.objects.filter(name__iregex=regex)
+            infor = GeneDbLink.objects.raw('SELECT id FROM gene_db_link_3 WHERE name REGEXP ' + '"' + '^' + id + '[0-9]' + '"' + ';')
+            #print(infor)
+            count = 0
+
+            for ele in infor:
+                temp = ele
+                count += 1
+                if count >= 1:
+                    break
+
+            if count >= 1:
+                inputID = searchID(id, "Trust (Group)", temp)
             else:
-                infor = GeneDbLink.objects.filter(subname__icontains = id)
-                print(len(infor))
-                if 1 < len(infor) < 30:
+                infor = GeneDbLink.objects.filter(Q(subname__icontains = "," + id + ",")|Q(subname__icontains = id + ","))
+
+                if 1 < len(infor):
                     #infor = GeneDbLink.objects.filter(
                     #    Q(name__iexact=id) | Q(hgnc__iexact=id) | Q(entrez_gene__iexact=id) | Q(ensembl__iexact=id) \
                       #  | Q(uniprotkb__iexact=id) | Q(omim__iexact=id))
-                    inputID = searchID(id, "Probably", infor[0])
+                    inputID = searchID(id, "Trust (many), find exact alias, try to use single 'Gene ID convert' to find all", infor[1])
                 elif len(infor) == 1:
-                    inputID = searchID(id, "Trust", infor[0])
+                    inputID = searchID(id, "Trust (only), find exact alias", infor[0])
                 else:
                     infor = None
-                    inputID = searchID(id, "Try to be sepcific", infor)
+                    infor = GeneDbLink.objects.filter(subname__icontains= id )
+                    if 1 < len(infor) < 50:
+                        inputID = searchID(id, "Probably, fuzzy match, results < 50, try to use single 'Gene ID convert' to find all", infor[0])
+                    elif len(infor) >= 50:
+                        inputID = searchID(id, "Probably, fuzzy match, too many results (>50), try to be more specific", infor[0])
+                    else:
+                        infor = None
+                        inputID = searchID(id, "No match", infor)
 
         results.append(inputID)
         #print(results[0].id,results[0].cre,results[0].info)
@@ -169,10 +221,10 @@ def download(request):
     # filename='abc.csv' 指定下载的文件名字
     response['Content-Disposition'] = "attachment; filename= single_convert_summary.csv "
     writer = csv.writer(response)
-    writer.writerow(['name', 'HGNC','Entrez_Gene', 'Ensembl', 'UniProtKB', 'OMIM', 'type', 'description', \
+    writer.writerow(['name', 'subname','HGNC','Entrez_Gene', 'Ensembl', 'UniProtKB', 'OMIM', 'type', 'description', \
                      'summary_entrez', 'summary_genecard', 'summary_uniport', 'summary_Tocris', 'summary_CIViC'])
     for info in info_filter:
-        writer.writerow([info.name, info.hgnc, info.entrez_gene, info.ensembl, info.uniprotkb, info.omim, \
+        writer.writerow([info.name, info.subname, info.hgnc, info.entrez_gene, info.ensembl, info.uniprotkb, info.omim, \
                          info.type, info.description, info.summary_entrez, info.summary_genecard,\
                          info.summary_uniport, info.summary_tocris, info.summary_civic])
     return response

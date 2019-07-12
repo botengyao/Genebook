@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'HelloWorld.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -94,14 +94,14 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'appdemo',
+        'NAME': 'django2',
         'USER':'ionadmin',
         'PASSWORD':'ionadmin',
         'HOST':'10.9.17.6',
         'PORT':'3306',
     }
 }
-'''
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 

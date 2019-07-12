@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class GeneDbLink(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
-    subname = models.CharField(max_length=768, blank=True, null=True)
+    subname = models.CharField(max_length=511, blank=True, null=True)
     hgnc = models.CharField(db_column='HGNC', max_length=255, blank=True, null=True)  # Field name made lowercase.
     entrez_gene = models.CharField(db_column='Entrez_Gene', max_length=255, blank=True, null=True)  # Field name made lowercase.
     ensembl = models.CharField(db_column='Ensembl', max_length=255, blank=True, null=True)  # Field name made lowercase.

@@ -78,7 +78,6 @@
                     {% csrf_token %}
                     Please select gene pool: <select name = "genepool" id = "select" class="form-control" value ='Fuzzy Search' required >
                     <option value ="Fuzzy Search">Fuzzy Search</option>
-                    <option value ="Gene Name">Gene Name</option>
                     <option value ="HGNC">HGNC</option>
                     <option value ="ENTREZ">ENTREZ</option>
                     <option value ="ENSEMBL">ENSEMBL</option>
@@ -102,6 +101,7 @@
         </div>
         <div class="col-md-8">
             <h4>Gene ID Convert</h4>
+
             <table  style="table-layout:fixed" class="table table-hover table-bordered table-responsive">
                 <thead class="thead-light" >
                 <tr>
@@ -109,11 +109,12 @@
                     <th scope="col">ID</th>
                     <th scope="col">type</th>
                     <th scope="col" width="10%">description</th>
-                    <th scope="col"width="30%">summary of ENTREZ</th>
-                    <th scope="col"width="30%">summary of GENECARD</th>
+                    <th scope="col"width="30%">Aliases</th>
+                    <th scope="col"width="30%">Credibility</th>
                 </tr>
                 </thead>
                 <tbody>
+                {% if info_filter %}
                 {% for information in info_filter %}
                 <tr style = "height:55px">
                     <th scope="row">{{information.name}}</th>
@@ -145,12 +146,16 @@
                     </td>
                     <td >{{information.type}}</td>
                     <td style="word-break:break-word">{{information.description}}</td>
-                    <td style="word-break:break-all">{{information.summary_entrez}}</td>
-                    <td style="word-break:break-all">{{information.summary_genecard}}</td>
+                    <td style="word-break:break-all">{{information.subname}}</td>
+                    <td>{{trust}}</td>
                     {% endfor %}
                 </tr>
+                 {%else %}
+                <h4 class="badge badge-primary text-wrap"  style="width: 15rem;">No results</h4>
+                 {% endif %}
                 </tbody>
             </table>
+
 
         </div>
     </div>
@@ -195,22 +200,29 @@
                 <table class="table table-hover table-bordered">
                     <thead class="thead-light">
                     <tr>
+                        <th scope="col">Your Input</th>
                         <th scope="col">Gene Name</th>
-                        <th scope="col">HGNC ID</th>
-                        <th scope="col">ENTREZ ID</th>
-                        <th scope="col">ENSEMBL ID</th>
-                        <th scope="col">UNIPROTKB ID</th>
-                        <th scope="col">OMIM ID</th>
+                        <th scope="col">HGNC</th>
+                        <th scope="col">ENTREZ</th>
+                        <th scope="col">ENSEMBL</th>
+                        <th scope="col">UNIPROTKB</th>
+                        <th scope="col">OMIM</th>
+                        <th scope="col">Aliases</th>
+                        <th scope="col">Credibility</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr style = "height:55px">
+                        <th scope="row"></th>
                         <th scope="row">KLK13</th>
                         <td><a href = "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/6361">6361</a></td>
                         <td><a href = "https://www.ncbi.nlm.nih.gov/gene?cmd=Retrieve&dopt=full_report&list_uids=26122">26085</a></td>
                         <td><a href = "http://www.ensembl.org/Homo_sapiens/geneview?gene=ENSG00000167759">ENSG00000167759</a></td>
                         <td><a href = "https://www.uniprot.org/uniprot/Q9UKR3">Q9UKR3</a></td>
                         <td><a href = "https://omim.org/entry/605505">605505</a></td>
+                        <td>Kallikrein Related Peptidase 13,Kallikrein-Like Protein 4,34,KLK-L4,KLKL4,Kallikrein-Like Gene 4,Kallikrein-13,Kallikrein 13,EC 3.4.21.-,</td>
+
+                        <td></td>
                     </tr>
 
                     </tbody>

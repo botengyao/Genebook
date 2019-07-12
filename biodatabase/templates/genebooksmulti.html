@@ -78,7 +78,6 @@
                     {% csrf_token %}
                     Please select gene pool: <select name = "genepool" class="form-control"  value = 'Fuzzy Search'required >
                     <option value ="Fuzzy Search">Fuzzy Search</option>
-                    <option value ="Gene Name">Gene Name</option>
                     <option value ="HGNC">HGNC</option>
                     <option value ="ENTREZ">ENTREZ</option>
                     <option value ="ENSEMBL">ENSEMBL</option>
@@ -155,7 +154,7 @@
         <div class ='container-fluid'>
         <div class="row">
             <div class = "left">
-                <div class="col-md-9">
+                <div class="col-md-8">
 
                     <form action ="{% url 'searchmulti' %}" method="get">
                         {% csrf_token %}
@@ -185,20 +184,21 @@
                 </div>
 
             </div>
-            <div class="col-md-8">
+            <div class="col-md-9">
 
                 <h4>Gene ID Convert</h4>
                 {% if gene_out == "All" %}
-                    <table class="table table-hover table-bordered">
+                    <table style="table-layout:fixed" class="table table-hover table-bordered">
                         <thead class="thead-light">
                         <tr>
                             <th scope="col">Your Input</th>
-                            <th scope="col">Gene Name</th>
-                            <th scope="col">HGNC ID</th>
-                            <th scope="col">ENTREZ ID</th>
-                            <th scope="col">ENSEMBL ID</th>
-                            <th scope="col">UNIPROTKB ID</th>
-                            <th scope="col">OMIM ID</th>
+                            <th scope="col" width="11%">Gene Name</th>
+                            <th scope="col" width="7%">HGNC</th>
+                            <th scope="col" width="8%">ENTREZ</th>
+                            <th scope="col" width="9%">ENSEMBL</th>
+                            <th scope="col" width="10%">UNIPROTKB</th>
+                            <th scope="col" width="9%">OMIM ID</th>
+                            <th scope="col">Aliases</th>
                             <th scope="col">Credibility</th>
                         </tr>
                         </thead>
@@ -209,16 +209,18 @@
                             <th scope="row">{{information.id}}</th>
                             <th scope="row">{{information.info.name}}</th>
                             <td ><a href="{{information.info.hgnc_link}}">{{information.info.hgnc}}</a></td>
-                            <td ><a href="{{information.info.entrez_gene_link}}">{{information.info.entrez_gene}}</a></td>
-                            <td ><a href="{{information.info.ensembl_link}}">{{information.info.ensembl}}</a></td>
-                            <td ><a href="{{information.info.uniprotkb_link}}">{{information.info.uniprotkb}}</a></td>
-                            <td ><a href="{{information.info.omim_link}}">{{information.info.omim}}</a></td>
+                            <td style="word-break:break-all"><a href="{{information.info.entrez_gene_link}}">{{information.info.entrez_gene}}</a></td>
+                            <td style="word-break:break-all"><a href="{{information.info.ensembl_link}}">{{information.info.ensembl}}</a></td>
+                            <td style="word-break:break-all"><a href="{{information.info.uniprotkb_link}}">{{information.info.uniprotkb}}</a></td>
+                            <td style="word-break:break-all"><a href="{{information.info.omim_link}}">{{information.info.omim}}</a></td>
+                            <td style="word-break:break-all">{{information.info.subname}}</td>
                             <td >{{information.cre}}</td>
                         </tr>
                         {% else %}
                         <tr style = "height:55px">
                             <th scope="row">{{information.id}}</th>
                             <th scope="row">None</th>
+                            <td >None</td>
                             <td >None</td>
                             <td >None</td>
                             <td >None</td>
